@@ -1,0 +1,24 @@
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  image: php:8.1
+  services:
+    - mysql:8.0
+  variables:
+    DB_HOST: mysql_db
+    DB_DATABASE: local
+    DB_USERNAME: root
+    DB_PASSWORD: rootpassword
+  script:
+    - apt-get update && apt-get install -y zip unzip git
+    - composer install
+    - php artisan migrate --force
+    - php artisan test
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to production"
