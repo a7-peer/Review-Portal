@@ -4,7 +4,7 @@ stages:
 
 test:
   stage: test
-  image: php:8.1
+  image: php:8.2  # Change PHP version to 8.2
   services:
     - mysql:8.0
   variables:
