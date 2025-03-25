@@ -8,12 +8,14 @@ test:
   services:
     - mysql:8.0
   variables:
-    DB_HOST: mysql_db
+    DB_HOST: mysql
     DB_DATABASE: local
     DB_USERNAME: root
     DB_PASSWORD: rootpassword
   script:
     - apt-get update && apt-get install -y zip unzip git
+    - curl -sS https://getcomposer.org/installer | php
+    - mv composer.phar /usr/local/bin/composer
     - composer install
     - php artisan migrate --force
     - php artisan test
@@ -22,7 +24,4 @@ deploy:
   stage: deploy
   script:
     - echo "Deploying to production"
-    - git pull origin main
-    - php artisan config:cache
-    - php artisan migrate --force
-
+    # Add additional deploy steps here as needed
