@@ -22,3 +22,7 @@ deploy:
   stage: deploy
   script:
     - echo "Deploying to production"
+    - git pull origin main
+    - php artisan config:cache
+    - php artisan migrate --force
+
