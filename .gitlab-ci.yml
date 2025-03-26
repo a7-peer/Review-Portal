@@ -4,25 +4,22 @@ stages:
 
 test:
   stage: test
-  image: php:8.2  # Change PHP version to 8.2
+  image: php:8.2
   services:
     - mysql:8.0
   variables:
     DB_HOST: mysql
-    DB_DATABASE: local
+    DB_DATABASE: testing
     DB_USERNAME: root
     DB_PASSWORD: rootpassword
   script:
     - apt-get update && apt-get install -y zip unzip git
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
-    - cd app/ReviewPortal  # Change to the directory where composer.json is located
+    - cd app/ReviewPortal
+    - cp .env.example .env.testing
+    - php artisan key:generate --env=testing  # Generate the APP_KEY for testing
     - composer install
-    - php artisan migrate --force
-    - php artisan test
-
-deploy:
-  stage: deploy
-  script:
-    - echo "Deploying to production"
-    # Add additional deploy steps here as needed
+    - php artisan config:clear
+    - php artisan migrate --force --env=testing
+    - php artisan test --env=testing
