@@ -17,9 +17,9 @@ test:
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
     - cd app/ReviewPortal
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
     - cp .env.example .env.testing
-    - php artisan key:generate --env=testing  # Generate the APP_KEY for testing
-    - composer install
+    - php artisan key:generate --env=testing
     - php artisan config:clear
     - php artisan migrate --force --env=testing
     - php artisan test --env=testing
