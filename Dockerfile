@@ -38,7 +38,7 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Copy Laravel files into the container
-COPY ./src /var/www/html
+COPY ./app/ReviewPortal /var/www/html
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html && \
