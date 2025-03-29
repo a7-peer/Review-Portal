@@ -28,5 +28,5 @@ test:
     - php artisan config:clear
     
     # Run migrations and tests
-    - php artisan migrate --force --env=testing
-    - php artisan test --env=testing
+    - php artisan migrate 
+    - php artisan test 
