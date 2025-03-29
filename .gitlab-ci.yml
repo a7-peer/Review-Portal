@@ -6,7 +6,9 @@ test:
   stage: test
   image: php:8.2
   services:
-    - mysql:8.0
+    - name: mysql:8.0
+      alias: mysql
+      command: --default-authentication-plugin=mysql_native_password
   variables:
     DB_HOST: mysql
     DB_DATABASE: testing
@@ -14,10 +16,10 @@ test:
     DB_PASSWORD: rootpassword
   script:
     # Install necessary dependencies
-    - apt-get update && apt-get install -y zip unzip git
+    - apt-get update && apt-get install -y zip unzip git libmysqlclient-dev
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
-    
+
     # Set up the Laravel project
     - cd app/ReviewPortal
     - composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -26,7 +28,11 @@ test:
     - cp .env.example .env
     - php artisan key:generate --env=testing
     - php artisan config:clear
-    
+
+    # Wait for MySQL to be ready
+    - echo "Waiting for MySQL to be ready..."
+    - sleep 10  # Adjust the sleep time if needed
+
     # Run migrations and tests
-    - php artisan migrate 
-    - php artisan test 
+    - php artisan migrate
+    - php artisan test
