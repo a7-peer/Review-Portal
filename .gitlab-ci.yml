@@ -2,24 +2,50 @@ stages:
   - test
   - deploy
 
+# Test Stage
 test:
   stage: test
   image: php:8.2
   services:
-    - mysql:8.0
+    - mysql:8.0  # Running MySQL service during tests
   variables:
-    DB_HOST: mysql
-    DB_DATABASE: testing
-    DB_USERNAME: root
-    DB_PASSWORD: rootpassword
+    DB_HOST: mysql  # Set MySQL container name
+    DB_DATABASE: testing  # Set test database name
+    DB_USERNAME: root  # Database username
+    DB_PASSWORD: rootpassword  # Database password
   script:
+    # Update and install required dependencies
     - apt-get update && apt-get install -y zip unzip git
+
+    # Install Composer (PHP dependency manager)
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
+
+    # Navigate to the Laravel application directory
     - cd app/ReviewPortal
+
+    # Install project dependencies
     - composer install --no-interaction --prefer-dist --optimize-autoloader
-    - cp .env .env.testing
+
+    # Check if .env file exists and copy it to .env.testing for the test environment
+    - cp .env.example .env  # Create .env from .env.example if .env does not exist
+    - cp .env .env.testing  # Copy to .env.testing for testing purposes
+
+    # Generate application key for testing
     - php artisan key:generate --env=testing
+
+    # Clear any cached configurations
     - php artisan config:clear
+
+    # Run migrations for the test environment
     - php artisan migrate --force --env=testing
+
+    # Run the tests
     - php artisan test --env=testing
+
+# Deploy Stage (Placeholder for actual deployment)
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying the application..."
+    # Add actual deployment commands here (e.g., SSH deployment, Kubernetes, etc.)
