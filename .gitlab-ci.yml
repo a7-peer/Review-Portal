@@ -7,15 +7,18 @@ test:
   stage: test
   image: php:8.2
   services:
-    - mysql:8.0  # Running MySQL service during tests
+    - mysql:8.0
   variables:
     DB_HOST: mysql  # Set MySQL container name
     DB_DATABASE: testing  # Set test database name
     DB_USERNAME: root  # Database username
     DB_PASSWORD: rootpassword  # Database password
   script:
-    # Update and install required dependencies
-    - apt-get update && apt-get install -y zip unzip git
+    # Install dependencies
+    - apt-get update && apt-get install -y zip unzip git libmysqlclient-dev
+
+    # Install PHP extensions
+    - apt-get install -y php8.2-mysql
 
     # Install Composer (PHP dependency manager)
     - curl -sS https://getcomposer.org/installer | php
@@ -27,14 +30,14 @@ test:
     # Install project dependencies
     - composer install --no-interaction --prefer-dist --optimize-autoloader
 
-    # Check if .env file exists and copy it to .env.testing for the test environment
-    - cp .env.example .env  # Create .env from .env.example if .env does not exist
-    - cp .env .env.testing  # Copy to .env.testing for testing purposes
+    # Copy .env to .env.testing for the test environment
+    - cp .env.example .env
+    - cp .env .env.testing
 
     # Generate application key for testing
     - php artisan key:generate --env=testing
 
-    # Clear any cached configurations
+    # Clear cached configuration
     - php artisan config:clear
 
     # Run migrations for the test environment
