@@ -14,8 +14,8 @@ test:
     DB_USERNAME: root  # Database username
     DB_PASSWORD: rootpassword  # Database password
   script:
-    # Install dependencies
-    - apt-get update && apt-get install -y zip unzip git libmysqlclient-dev
+    # Update and install dependencies
+    - apt-get update && apt-get install -y zip unzip git libmariadb-dev
 
     # Install PHP extensions
     - apt-get install -y php8.2-mysql
