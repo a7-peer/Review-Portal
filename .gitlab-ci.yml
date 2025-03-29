@@ -13,38 +13,33 @@ test:
     DB_USERNAME: root
     DB_PASSWORD: rootpassword
   script:
-    # Add PHP repository for extended PHP versions (like 8.2) and install necessary extensions
-    - apt-get update && apt-get install -y zip unzip git libmariadb-dev software-properties-common
-    - add-apt-repository ppa:ondrej/php -y
-    - apt-get update
+    # Install necessary dependencies for Laravel and MySQL support
+    - apt-get update && apt-get install -y zip unzip git libmariadb-dev
 
-    # Install PHP 8.2 extensions
-    - apt-get install -y php8.2-mysql php8.2-cli php8.2-mbstring php8.2-xml php8.2-curl php8.2-zip php8.2-bcmath
-
-    # Install Composer globally
+    # Install Composer
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
 
-    # Navigate to the Laravel app directory
+    # Navigate to Laravel project directory
     - cd app/ReviewPortal
 
-    # Install PHP dependencies using Composer
+    # Install PHP dependencies
     - composer install --no-interaction --prefer-dist --optimize-autoloader
 
-    # Copy .env to .env.testing
+    # Copy environment files for testing
     - cp .env.example .env
     - cp .env .env.testing
 
-    # Generate application key and migrate database
+    # Generate app key and run migrations
     - php artisan key:generate --env=testing
     - php artisan config:clear
     - php artisan migrate --force --env=testing
 
-    # Run tests
+    # Run the tests
     - php artisan test --env=testing
 
 deploy:
   stage: deploy
   script:
     - echo "Deploying the application..."
-    # Add actual deployment commands here
+    # Add your deployment commands here
