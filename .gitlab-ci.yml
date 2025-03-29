@@ -2,53 +2,49 @@ stages:
   - test
   - deploy
 
-# Test Stage
 test:
   stage: test
   image: php:8.2
   services:
     - mysql:8.0
   variables:
-    DB_HOST: mysql  # Set MySQL container name
-    DB_DATABASE: testing  # Set test database name
-    DB_USERNAME: root  # Database username
-    DB_PASSWORD: rootpassword  # Database password
+    DB_HOST: mysql
+    DB_DATABASE: testing
+    DB_USERNAME: root
+    DB_PASSWORD: rootpassword
   script:
-    # Update and install dependencies
-    - apt-get update && apt-get install -y zip unzip git libmariadb-dev
+    # Add PHP repository for extended PHP versions (like 8.2) and install necessary extensions
+    - apt-get update && apt-get install -y zip unzip git libmariadb-dev software-properties-common
+    - add-apt-repository ppa:ondrej/php -y
+    - apt-get update
 
-    # Install PHP extensions
-    - apt-get install -y php8.2-mysql
+    # Install PHP 8.2 extensions
+    - apt-get install -y php8.2-mysql php8.2-cli php8.2-mbstring php8.2-xml php8.2-curl php8.2-zip php8.2-bcmath
 
-    # Install Composer (PHP dependency manager)
+    # Install Composer globally
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
 
-    # Navigate to the Laravel application directory
+    # Navigate to the Laravel app directory
     - cd app/ReviewPortal
 
-    # Install project dependencies
+    # Install PHP dependencies using Composer
     - composer install --no-interaction --prefer-dist --optimize-autoloader
 
-    # Copy .env to .env.testing for the test environment
+    # Copy .env to .env.testing
     - cp .env.example .env
     - cp .env .env.testing
 
-    # Generate application key for testing
+    # Generate application key and migrate database
     - php artisan key:generate --env=testing
-
-    # Clear cached configuration
     - php artisan config:clear
-
-    # Run migrations for the test environment
     - php artisan migrate --force --env=testing
 
-    # Run the tests
+    # Run tests
     - php artisan test --env=testing
 
-# Deploy Stage (Placeholder for actual deployment)
 deploy:
   stage: deploy
   script:
     - echo "Deploying the application..."
-    # Add actual deployment commands here (e.g., SSH deployment, Kubernetes, etc.)
+    # Add actual deployment commands here
