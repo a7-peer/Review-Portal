@@ -13,14 +13,20 @@ test:
     DB_USERNAME: root
     DB_PASSWORD: rootpassword
   script:
+    # Install necessary dependencies
     - apt-get update && apt-get install -y zip unzip git
     - curl -sS https://getcomposer.org/installer | php
     - mv composer.phar /usr/local/bin/composer
+    
+    # Set up the Laravel project
     - cd app/ReviewPortal
     - composer install --no-interaction --prefer-dist --optimize-autoloader
-    - cp cp .env.example .env
-    - cp .env .env.testing
+
+    # Set up environment files
+    - cp .env.example .env
     - php artisan key:generate --env=testing
     - php artisan config:clear
+    
+    # Run migrations and tests
     - php artisan migrate --force --env=testing
     - php artisan test --env=testing
