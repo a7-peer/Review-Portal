@@ -1,38 +1,32 @@
-version: '3.8'
+stages:
+  - test
+  - deploy
 
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
-    working_dir: /var/www/html
-    volumes:
-      - ./app/ReviewPortal:/var/www/html
-      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
+test:
+  stage: test
+  image: php:8.2
+  services:
+    - mysql:8.0
+  variables:
+    DB_HOST: mysql
+    DB_DATABASE: testing
+    DB_USERNAME: root
+    DB_PASSWORD: rootpassword
+  script:
+    - apt-get update && apt-get install -y zip unzip git
+    - curl -sS https://getcomposer.org/installer | php
+    - mv composer.phar /usr/local/bin/composer
+    - cd app/ReviewPortal
+    # Install Composer dependencies
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
 
-  db:
-    image: mysql:8.0
-    container_name: mysql_db
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword  # Set the root password
-      MYSQL_DATABASE: local
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
+    # Ensure the .env file exists or copy it
+    - if [ ! -f .env ]; then cp .env.example .env; fi
+    - cp .env .env.testing
 
-  gitlab-runner:
-    image: gitlab/gitlab-runner:latest
-    container_name: gitlab_runner
-    volumes:
-      - /Users/asadpirzada/gitlab-runner/config:/etc/gitlab-runner
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-
-volumes:
-  db_data:
+    # Generate the application key, clear config cache, and run migrations and tests
+    - php artisan key:generate --env=testing
+    - php artisan config:clear
+    - until mysql -h "$DB_HOST" -u "$DB_USERNAME" -p"$DB_PASSWORD" -e 'select 1'; do echo "Waiting for MySQL..."; sleep 5; done
+    - php artisan migrate --force --env=testing
+    - php artisan test --env=testing
