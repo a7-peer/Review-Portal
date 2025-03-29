@@ -8,7 +8,7 @@ test:
   services:
     - name: mysql:8.0
       alias: mysql
-      command: --default-authentication-plugin=mysql_native_password
+      command: ["--default-authentication-plugin=mysql_native_password"]
   variables:
     DB_HOST: mysql
     DB_DATABASE: testing
