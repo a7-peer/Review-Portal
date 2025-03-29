@@ -31,6 +31,10 @@ RUN apt-get install -y \
     php8.2-bcmath \
     && apt-get clean
 
+# Install Composer globally
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer
+
 # Enable Apache mods
 RUN a2enmod rewrite
 
