@@ -1,8 +1,57 @@
 stages:
+  - setup
   - test
+  - build
   - deploy
 
-test:
+variables:
+  APP_ENV: testing
+  DB_CONNECTION: mysql
+  DB_HOST: mysql
+  DB_PORT: 3306
+  MYSQL_ROOT_PASSWORD: rootpassword
+  NODE_VERSION: 18
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - app/ReviewPortal/vendor/
+    - app/ReviewPortal/node_modules/
+
+# Install PHP dependencies
+setup_php:
+  stage: setup
+  image: php:8.2
+  script:
+    - apt-get update && apt-get install -y unzip libzip-dev libpng-dev libonig-dev libxml2-dev
+    - docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - cd app/ReviewPortal
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
+    - cp .env.example .env
+    - php artisan key:generate
+  artifacts:
+    paths:
+      - app/ReviewPortal/vendor/
+    expire_in: 1 week
+
+# Install Node dependencies for Breeze
+setup_node:
+  stage: setup
+  image: node:${NODE_VERSION}
+  script:
+    - cd app/ReviewPortal
+    - npm install
+    - npm run dev
+  artifacts:
+    paths:
+      - app/ReviewPortal/node_modules/
+      - app/ReviewPortal/public/css/
+      - app/ReviewPortal/public/js/
+    expire_in: 1 week
+
+# Run PHP tests
+test_php:
   stage: test
   image: php:8.2
   services:
@@ -10,29 +59,50 @@ test:
       alias: mysql
       command: ["--default-authentication-plugin=mysql_native_password"]
   variables:
-    DB_HOST: mysql
     DB_DATABASE: testing
     DB_USERNAME: root
     DB_PASSWORD: rootpassword
   script:
-    # Install necessary dependencies
-    - apt-get update && apt-get install -y zip unzip git libmysqlclient-dev
-    - curl -sS https://getcomposer.org/installer | php
-    - mv composer.phar /usr/local/bin/composer
-
-    # Set up the Laravel project
     - cd app/ReviewPortal
-    - composer install --no-interaction --prefer-dist --optimize-autoloader
-
-    # Set up environment files
-    - cp .env.example .env
-    - php artisan key:generate --env=testing
-    - php artisan config:clear
-
-    # Wait for MySQL to be ready
-    - echo "Waiting for MySQL to be ready..."
-    - sleep 10  # Adjust the sleep time if needed
-
+    # Wait for MySQL
+    - for i in {1..10}; do mysql -h mysql -u root -prootpassword -e "SELECT 1" && break || sleep 5; done
     # Run migrations and tests
-    - php artisan migrate
+    - php artisan migrate:fresh --force
     - php artisan test
+  artifacts:
+    when: always
+    paths:
+      - app/ReviewPortal/storage/logs/
+    reports:
+      junit: app/ReviewPortal/storage/logs/junit.xml
+
+# Run frontend tests for Breeze
+test_frontend:
+  stage: test
+  image: node:${NODE_VERSION}
+  script:
+    - cd app/ReviewPortal
+    - npm run test
+  artifacts:
+    when: always
+    paths:
+      - app/ReviewPortal/tests/Js/coverage/
+    reports:
+      junit: app/ReviewPortal/tests/Js/junit.xml
+
+# Build Docker image (if needed)
+build_image:
+  stage: build
+  image: docker:20.10
+  services:
+    - docker:20.10-dind
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  only:
+    - main
+    - master
+
+# Deployment stage would go here
+# deploy_production:
+#   ...
