@@ -45,7 +45,7 @@ test:
   variables:
     DB_HOST: mysql
     DB_PORT: 3306
-    DB_DATABASE: testing
+    DB_DATABASE: mysql_db
     DB_USERNAME: root
     DB_PASSWORD: rootpassword
   script:
