@@ -15,23 +15,11 @@ setup:
   stage: setup
   image: php:8.2
   script:
-    # Install system dependencies
-    - apt-get update && apt-get install -y \
-        unzip \
-        libzip-dev \
-        libpng-dev \
-        libonig-dev \
-        libxml2-dev
+    # Install system dependencies (fixed formatting)
+    - apt-get update && apt-get install -y unzip libzip-dev libpng-dev libonig-dev libxml2-dev
       
     # Install PHP extensions
-    - docker-php-ext-install \
-        pdo_mysql \
-        mbstring \
-        zip \
-        exif \
-        pcntl \
-        bcmath \
-        gd
+    - docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
 
     # Install Composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
