@@ -42,12 +42,11 @@ setup_node:
   script:
     - cd app/ReviewPortal
     - npm install
-    - npm run dev
+    - npm run build  # Instead of npm run dev
   artifacts:
     paths:
       - app/ReviewPortal/node_modules/
-      - app/ReviewPortal/public/css/
-      - app/ReviewPortal/public/js/
+      - app/ReviewPortal/public/build/  # Changed from public/css/ and public/js/
     expire_in: 1 week
 
 # Run PHP tests
