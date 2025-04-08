@@ -9,7 +9,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./app/ReviewPortal:/var/www/html
-      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini  # Correct path
     ports:
       - "8080:80"
     depends_on:
