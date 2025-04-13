@@ -1,5 +1,5 @@
 ```markdown
-## 🚗 Dealership Review Portal
+# 🚗 Dealership Review Portal
 
 A web platform for users to review and rate car dealerships. Built with Laravel, the portal supports user registration, review submissions, admin moderation, and responsive design. This project is maintained by a collaborative student team and uses modern DevOps practices.
 
