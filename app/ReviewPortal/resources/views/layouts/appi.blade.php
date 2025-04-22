@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Car Dealership</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-BI34LZWszE2uyKy6Fgq+F4eHHTVkk5AyZ+zGgAQk0DmsXjX9bQ1PwCDMZC6XlM9PJKgpKxK9EJeyA4byHvKyvg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .hero-image {
@@ -29,6 +32,7 @@
         const menu = document.getElementById('mobile-menu');
         menu.classList.toggle('hidden');
     });
+
 </script>
 </body>
 </html>
