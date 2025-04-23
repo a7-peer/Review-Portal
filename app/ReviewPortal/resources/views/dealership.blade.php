@@ -43,7 +43,7 @@
                         <tr class="hover:bg-gray-50">
                             <td class="py-3 px-4">{{ $dealer->id }}</td>
                             <td class="py-3 px-4">
-                                <a href="" class="text-blue-600 hover:text-blue-800">
+                                <a href="{{ route('to_review', $dealer->id) }}" class="text-blue-600 hover:text-blue-800">
                                     {{ $dealer->name }}
                                 </a>
                             </td>
