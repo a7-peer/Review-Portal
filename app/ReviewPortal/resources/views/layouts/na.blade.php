@@ -14,8 +14,8 @@
             <!-- Desktop menu -->
             <div class="hidden lg:flex items-center space-x-8">
                 <a href="{{ url('/') }}" class="hover:text-gray-300 {{ request()->is('/') ? 'text-blue-400' : '' }}">Home</a>
-                <a href="{{ route('login') }}" class="hover:text-gray-300 {{ request()->is('login') ? 'text-blue-400' : '' }}">About Us</a>
-                <a href="{{ route('login') }}" class="hover:text-gray-300 {{ request()->is('login') ? 'text-blue-400' : '' }}">Contact Us</a>
+                <a href="{{ route('about') }}" class="hover:text-gray-300 {{ request()->is('/about') ? 'text-blue-400' : '' }}">About Us</a>
+                <a href="{{ route('contact') }}" class="hover:text-gray-300 {{ request()->is('/contact') ? 'text-blue-400' : '' }}">Contact Us</a>
 
                 @auth
                     <!-- Desktop Dropdown -->

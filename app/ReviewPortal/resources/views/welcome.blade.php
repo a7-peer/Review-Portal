@@ -7,7 +7,7 @@
                  alt="Luxury Car Dealership"
                  class="hero-image rounded-lg shadow-xl">
             <h2 class="my-4 text-3xl font-bold text-gray-800">Discover Your Dream Car Today</h2>
-            <a href="" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 mb-8">
+            <a href="{{Route("dealerships")}}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 mb-8">
                 Explore Inventory
             </a>
         </div>

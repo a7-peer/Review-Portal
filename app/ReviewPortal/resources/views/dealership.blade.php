@@ -17,34 +17,47 @@
                         <th class="py-3 px-4 text-left">City</th>
                         <th class="py-3 px-4 text-left">Address</th>
                         <th class="py-3 px-4 text-left">Zip Code</th>
-                        <th class="py-3 px-4 text-left text-black">
-                            <select id="stateFilter" class="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                <option value="all">All States</option>
-                                <option value="Maryland">Maryland</option>
-                                <option value="Virginia">Virginia</option>
-                                <option value="Pennsylvania">Pennsylvania</option>
-                            </select></th>
-                        @auth
-                        <th class="py-3 px-4 text-left">Review</th>
+                        <th class="py-3 px-4 text-left">
+                            <form method="GET" action="{{ route('dealerships') }}" class="flex items-center space-x-2">
+                                <label for="state" class="text-white text-sm">State:</label>
+                                <select name="state" id="state"
+                                        onchange="this.form.submit()"
+                                        class="text-sm text-gray-800 rounded p-1 bg-white border border-gray-300 focus:outline-none focus:ring focus:border-blue-300">
+                                    <option value="">All</option>
+                                    @foreach ($states as $state)
+                                        <option value="{{ $state }}" {{ request('state') == $state ? 'selected' : '' }}>
+                                            {{ $state }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        </th>
+
+                    @auth
+                            <th class="py-3 px-4 text-left">Actions</th>
                         @endauth
                     </tr>
                     </thead>
                     <tbody id="dealershipTableBody" class="divide-y divide-gray-200">
-                    <!-- Sample data - would normally be populated by JavaScript -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4">1</td>
-                        <td class="py-3 px-4"><a href="#" class="text-blue-600 hover:text-blue-800">Premium Motors Baltimore</a></td>
-                        <td class="py-3 px-4">Lahore</td>
-                        <td class="py-3 px-4">123 Luxury Ave</td>
-                        <td class="py-3 px-4">21201</td>
-                        <td class="py-3 px-4">Maryland</td>
-                        @auth
-                        <td class="py-3 px-4">
-                            <a href="#" class="text-blue-600 hover:text-blue-800">Add View</a>
-                        </td>
-                        @endauth
-                    </tr>
-
+                    @foreach ($dealerships as $dealer)
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4">{{ $dealer->id }}</td>
+                            <td class="py-3 px-4">
+                                <a href="" class="text-blue-600 hover:text-blue-800">
+                                    {{ $dealer->name }}
+                                </a>
+                            </td>
+                            <td class="py-3 px-4">{{ $dealer->city }}</td>
+                            <td class="py-3 px-4">{{ $dealer->address }}</td>
+                            <td class="py-3 px-4">{{ $dealer->zip_code }}</td>
+                            <td class="py-3 px-4">{{ $dealer->state }}</td>
+                            @auth
+                                <td class="py-3 px-4 space-x-2">
+                                    <a href="{{ route('to_review', $dealer->id) }}" class="text-green-600 hover:text-green-800">Add Review</a>
+                                </td>
+                            @endauth
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
