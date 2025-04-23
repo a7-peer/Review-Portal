@@ -36,36 +36,38 @@ class ReviewController extends Controller
         return redirect()->back()->with('success', 'Review submitted!');
     }
 
-    public function update(Request $request, Review $review): RedirectResponse
+    public function edit(Dealership $dealership, Review $review)
     {
-        // Manually check if the authenticated user is the owner of the review
-        if (Auth::id() !== $review->user_id) {
-            return redirect()->back()->with('error', 'You are not authorized to update this review.');
+        // Verify the user owns this review
+        if ($review->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('review', [
+            'dealership' => $dealership,
+            'carMakes' => CarMake::all(),
+            'editingReview' => $review // Pass the review being edited
+        ]);
+    }
+
+    public function update(Request $request, Review $review)
+    {
+        // Verify the user owns this review
+        if ($review->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
         }
 
         $validated = $request->validate([
+            'purchase_date' => 'required|date',
             'car_make_id' => 'required|exists:car_makes,id',
             'car_year' => 'required|integer|min:1900|max:2099',
-            'purchase_date' => 'required|date',
-            'review_text' => 'required|string|max:2000',
+            'review_text' => 'required|string',
         ]);
 
         $review->update($validated);
 
-        return redirect()->back()->with('success', 'Review updated!');
-    }
-
-    public function edit(Review $review)
-    {
-        // Manually check if the authenticated user is the owner of the review
-        if (Auth::id() !== $review->user_id) {
-            return redirect()->back()->with('error', 'You are not authorized to edit this review.');
-        }
-
-        $carMakes = CarMake::all();
-        $dealership = $review->dealership;
-
-        return view('edit-review', compact('review', 'carMakes', 'dealership'));
+        return redirect()->route('dealerships', $review->dealership_id)
+            ->with('success', 'Review updated successfully!');
     }
 
     public function destroy(Review $review): RedirectResponse

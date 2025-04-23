@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CarMake;
 use App\Models\Dealership;
+use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DealershipController extends Controller
 {
@@ -24,6 +27,8 @@ class DealershipController extends Controller
 
         return view('dealership', compact('dealerships', 'states'));
     }
+
+
 
 
 

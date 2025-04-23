@@ -14,6 +14,7 @@ Route::get('/dealerships', [DealershipController::class, 'showAll'])->name('deal
 
 
 
+
 //Review
 Route::get('/review', [PageController::class, 'review'])->name('review');
 Route::get('/reviews/{dealership}', [ReviewController::class, 'show'])->name('to_review');
@@ -21,6 +22,8 @@ Route::post('/reviews/{dealership}/store', [ReviewController::class, 'store'])->
 Route::get('/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
 Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+
 
 
 

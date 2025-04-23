@@ -11,6 +11,9 @@ class Review extends Model
 
     // Define the table name (optional, Laravel assumes it's pluralized form)
     protected $table = 'reviews';
+    protected $casts = [
+        'purchase_date' => 'date',
+    ];
 
     // Define the fields that are mass assignable
     protected $fillable = [

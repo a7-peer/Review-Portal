@@ -6,6 +6,8 @@
     <title>Best Car Dealership</title>
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-BI34LZWszE2uyKy6Fgq+F4eHHTVkk5AyZ+zGgAQk0DmsXjX9bQ1PwCDMZC6XlM9PJKgpKxK9EJeyA4byHvKyvg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
