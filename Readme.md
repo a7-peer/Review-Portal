@@ -2,7 +2,7 @@
 ```markdown
 # 🚗 Best Car Dealership Review Website
 
-Welcome to the official repository for the **Best Car Dealership Review Website** – a Laravel-based platform that allows users to register, browse dealerships, and post reviews.
+Welcome to the official repository for the **Dealership Review Website** – a Laravel-based platform that allows users to register, browse dealerships, and post reviews.
 
 ---
 
